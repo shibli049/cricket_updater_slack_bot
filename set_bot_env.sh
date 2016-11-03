@@ -1,4 +1,0 @@
-export BOT_ID=U2WNBTJ83
-export SLACK_TOKEN=xoxb-98759936275-Gn85okO3bq2NjLlFKkFijRUp
-export BOT_CHANNEL_ID=C2XCL67HT
-export SLACK_WEBHOOK_URL='https://hooks.slack.com/services/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'
