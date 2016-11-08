@@ -27,7 +27,7 @@ def getScore(html):
     return update,status,live
 
 
-def getPage(url = "http://www.espncricinfo.com/netstorage/1063054.json?xhr=1"):
+def getPage(url = "http://www.espncricinfo.com/netstorage/1063053.json?xhr=1"):
     # headers = {'accept-encoding': 'gzip,deflate'}
     # , headers=headers
     response = requests.get(url)
@@ -43,9 +43,9 @@ def showScore():
     if(len(html) > 100):
         try:
             return getScore(html)
-        except json.decoder.JSONDecodeError as err:
+        except (json.decoder.JSONDecodeError ,KeyError) as err:
             logging.debug(html)
-            logging.error("Error Retreiving Json Data")
+            logging.error("Error Retreiving Json Data: {0}".format(err))
             return None,None,[]
 
 
