@@ -18,19 +18,24 @@ def sendSlackMessage(msg,webhook_url = default_webhook_url, payload= default_pay
     response = requests.post(webhook_url,json=payload)
     logging.debug(response.text)
 
+def handleSlackMsg(mybot, prefix, status,last_update):
+    if('won the toss' in status):
+        mybot.sendMessageToBotChannel(msg = prefix + status + "\n" + str(last_update.get('runs',0)) + "/" + str(last_update.get('wk',0)))
+    else:
+        mybot.sendMessageToBotChannel(msg = prefix + status)
 
-if __name__ == '__main__':
-
+def main():
     last_update = None
-
     while(True):
-        time.sleep(random.randint(30,70))
+        if(last_update):
+            time.sleep(random.randint(30,70))
         logging.info(time.ctime())
         update,status,_ = espn_update.showScore()
         if(update != None and status != None):
             if(last_update == None):
-                mybot.sendMessageToBotChannel(msg = "new: " + status)
                 last_update = update
+                handleSlackMsg(mybot,"new: ", status, last_update)
+                # mybot.sendMessageToBotChannel(msg = "new: " + status)
                 logging.info("New: " + json.dumps( last_update ))
             else:
                 # update = {'runs' : int(runs), 'wk': wickets-int(remaining_wickets), 'lead':lead}
@@ -40,18 +45,23 @@ if __name__ == '__main__':
                 batting_team_diff = update['batting_team_id'] != last_update['batting_team_id']
                 if('won by' in status or 'lost by' in status):
                     last_update = update
-                    mybot.sendMessageToBotChannel(msg = "Final Result: " + status)
+                    handleSlackMsg(mybot,"Final Result: ", status, last_update)
+                    # mybot.sendMessageToBotChannel(msg = "Final Result: " + status)
                     logging.info(">>>Final Update Available: " + json.dumps( last_update ))
                     break
                 if('stump' in status):
                     last_update = update
-                    mybot.sendMessageToBotChannel(msg = "Final update: " + status)
+                    # mybot.sendMessageToBotChannel(msg = "Final update: " + status)
+                    handleSlackMsg(mybot,"Final update: ", status, last_update)
                     logging.info(">>>Day Final Update Available: " + json.dumps( last_update ))
                     sleep_time = 60*60
                     time.sleep(sleep_time)
                 elif(rundiff == 50 or wkdiff == 1 or leaddiff == 20 or batting_team_diff ):
                    last_update = update
-                   mybot.sendMessageToBotChannel(msg = "update: " + status)
+                   handleSlackMsg(mybot,"update: ", status, last_update)
                    logging.info(">>>Update Available: " + json.dumps( last_update ))
                 else:
                     logging.info("No Update Available: " + json.dumps( update ))
+
+if __name__ == '__main__':
+    main()
