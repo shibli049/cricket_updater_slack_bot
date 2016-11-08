@@ -27,7 +27,7 @@ def getScore(html):
     return update,status,live
 
 
-def getPage(url = "http://www.espncricinfo.com/netstorage/1000851.json?xhr=1"):
+def getPage(url = "http://www.espncricinfo.com/netstorage/1059703.json?xhr=1"):
     # headers = {'accept-encoding': 'gzip,deflate'}
     # , headers=headers
     response = requests.get(url)

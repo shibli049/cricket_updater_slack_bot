@@ -38,7 +38,18 @@ if __name__ == '__main__':
                 wkdiff = abs( update['wk'] - last_update['wk'])
                 leaddiff =  abs( update['lead'] - last_update['lead'])
                 batting_team_diff = update['batting_team_id'] != last_update['batting_team_id']
-                if(rundiff == 50 or wkdiff == 1 or leaddiff == 20 or batting_team_diff ):
+                if('won by' in status or 'lost by' in status):
+                    last_update = update
+                    mybot.sendMessageToBotChannel(msg = "Final Result: " + status)
+                    logging.info(">>>Final Update Available: " + json.dumps( last_update ))
+                    break
+                if('stump' in status):
+                    last_update = update
+                    mybot.sendMessageToBotChannel(msg = "Final update: " + status)
+                    logging.info(">>>Day Final Update Available: " + json.dumps( last_update ))
+                    sleep_time = 60*60
+                    time.sleep(sleep_time)
+                elif(rundiff == 50 or wkdiff == 1 or leaddiff == 20 or batting_team_diff ):
                    last_update = update
                    mybot.sendMessageToBotChannel(msg = "update: " + status)
                    logging.info(">>>Update Available: " + json.dumps( last_update ))
